@@ -1,24 +1,32 @@
 package com.ssws.resources;
 
 import com.ssws.entities.User;
+import com.ssws.services.UserService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/users")
 public class userResource {
 
+    private final UserService userService;
+
+    public userResource(UserService userService) {
+        this.userService = userService;
+    }
+
     @GetMapping
-    public ResponseEntity<User> findAll() {
-        User user = new User(
-            1L,
-            "Test",
-            "test@test.com",
-            "123456789",
-            "123456"
-        );
-        return ResponseEntity.ok().body(user);
+    public ResponseEntity<List<User>> findAll() {
+        List<User> list = userService.findAll();
+        return ResponseEntity.ok().body(list);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<User> findById(@PathVariable Long id) {        return userService.findById(id)
+                .map(ResponseEntity.status(HttpStatus.ACCEPTED)::body)
+                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
 }
