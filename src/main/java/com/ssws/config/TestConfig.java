@@ -1,14 +1,8 @@
 package com.ssws.config;
 
-import com.ssws.entities.Category;
-import com.ssws.entities.Order;
-import com.ssws.entities.Product;
-import com.ssws.entities.User;
+import com.ssws.entities.*;
 import com.ssws.entities.enums.OrderStatus;
-import com.ssws.repositories.CategoryRepository;
-import com.ssws.repositories.OrderRepository;
-import com.ssws.repositories.ProductRepository;
-import com.ssws.repositories.UserRepository;
+import com.ssws.repositories.*;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -24,15 +18,19 @@ public class TestConfig implements CommandLineRunner {
     private final OrderRepository orderRepository;
     private final CategoryRepository categoryRepository;
     private final ProductRepository productRepository;
+    private final OrderItemRepository orderItemRepository;
 
     public TestConfig(UserRepository userRepository,
                       OrderRepository orderRepository,
                       CategoryRepository categoryRepository,
-                      ProductRepository productRepository) {
+                      ProductRepository productRepository,
+                      OrderItemRepository orderItemRepository
+    ) {
         this.userRepository = userRepository;
         this.orderRepository = orderRepository;
         this.categoryRepository = categoryRepository;
         this.productRepository = productRepository;
+        this.orderItemRepository = orderItemRepository;
     }
 
     @Override
@@ -111,6 +109,11 @@ public class TestConfig implements CommandLineRunner {
                 ""
         );
 
+        OrderItem oi1 = new OrderItem(o1, p1, 2, p1.getPrice());
+        OrderItem oi2 = new OrderItem(o1, p3, 1, p3.getPrice());
+        OrderItem oi3 = new OrderItem(o2, p3, 2, p3.getPrice());
+        OrderItem oi4 = new OrderItem(o3, p5, 2, p5.getPrice());
+
         p1.getCategories().add(cat2);
         p2.getCategories().add(cat1);
         p3.getCategories().add(cat3);
@@ -121,5 +124,6 @@ public class TestConfig implements CommandLineRunner {
         orderRepository.saveAll(List.of(o1, o2, o3));
         categoryRepository.saveAll(List.of(cat1, cat2, cat3));
         productRepository.saveAll(List.of(p1, p2, p3, p4, p5));
+        orderItemRepository.saveAll(List.of(oi1, oi2, oi3, oi4));
     }
 }
